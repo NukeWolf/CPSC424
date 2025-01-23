@@ -36,7 +36,7 @@ int main() {
     // YOUR CODE HERE
 
     int cores = omp_get_num_procs();
-    #pragma omp parallel for num_threads(cores*2)
+    #pragma omp parallel for
     for (int i = 0; i < n; ++i){
         for (int k = 0; k < n; ++k){
             for (int j = 0; j < n; ++j){
