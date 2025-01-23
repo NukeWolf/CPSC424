@@ -36,11 +36,11 @@ int main() {
     // YOUR CODE HERE
 
     int cores = omp_get_num_procs();
-    #pragma omp parallel for
+    #pragma omp parallel for num_threads(cores)
     for (int i = 0; i < n; ++i){
         for (int k = 0; k < n; ++k){
             for (int j = 0; j < n; ++j){
-                C[i][j] += A[i][k] + B[k][j];
+                C[i][j] += A[i][k] * B[k][j];
             }
         }
     }
