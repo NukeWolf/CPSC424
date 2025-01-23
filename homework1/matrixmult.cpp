@@ -35,6 +35,19 @@ int main() {
     // TODO: perform matrix multiplication A x B and write into C: C = A x B
     // YOUR CODE HERE
 
+    int cores = omp_get_num_procs();
+    #pragma omp parallel for num_threads(cores*2)
+    for (int i = 0; i < n; ++i){
+        for (int k = 0; k < n; ++k){
+            for (int j = 0; j < n; ++j){
+                C[i][j] += A[i][k] + B[k][j];
+            }
+        }
+    }
+    
+    
+
+
     std::cout << "The resulting matrix C = A x B is:\n";
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
