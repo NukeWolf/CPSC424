@@ -47,17 +47,17 @@ int main() {
         sum += B[i];
     }
     
+
+    
     //Initial
     #pragma omp parallel
     {
         int max = (N+1)/2;
-
-        #pragma omp for reduction(+:sum)
+        // int n_magic = N & 1;
+        #pragma omp for reduction(+:sum) schedule(static)
         for(int i = 1; i < max; i++){
-            B[i] = B[i] + (i & 1) + A[i] + i + B[i+N];
             int ni = N - i;
-            B[ni] = B[ni] + (ni & 1) + A[ni] + ni + B[ni+N];
-            sum += ((B[i] + B[ni]) >> 1) << 1;
+            sum += (((i & 1) + (ni & 1) + A[i] + B[i] + B[ni] + A[ni] + B[i+N] + N + B[ni+N]) >> 1) << 1;
         }
     }
 
