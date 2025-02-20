@@ -38,43 +38,28 @@ int main() {
     double start_time = omp_get_wtime();
 
     // TODO: your code here. Return the sum in the sum double.
-    double sum = 0;
+    // Initial sum of 0
+    double sum = (2 * B[0] + 3 * B[N] + 4 * A[0]) >> 1;
 
+    if (!(N & 1)){
+        int i = N / 2;
+        B[i] = B[i] + (i & 1) + A[i] + i + B[i+N];
+        sum += B[i];
+    }
+    
     //Initial
     #pragma omp parallel
     {
-        #pragma omp for
-        for(int i = 0; i < N; i++){
-            A[i] = A[i] + i;
-        }
-
-        #pragma omp for
-        for(int i = 0; i < N; i++){
-            B[i] = B[i] + (i%2);
-        }
-
-        #pragma omp for
-        for(int i = 0; i < N; i++){
-            B[i] = B[i] + A[i] + B[i+N];
-        }
-        #pragma omp for
-        for(int i = N; i < 2*N; i++){
-            B[i] = B[i] + 2 * A[i-N] + B[i-N];
-        }
-
-        #pragma omp for
-        for(int i = 0; i < N; i++){
-            A[i] =(B[i] + B[N-i]) / 2.0;
-        }
+        int max = (N+1)/2;
 
         #pragma omp for reduction(+:sum)
-        for(int i = 0; i < N; i++){
-            sum += A[i];
+        for(int i = 1; i < max; i++){
+            B[i] = B[i] + (i & 1) + A[i] + i + B[i+N];
+            int ni = N - i;
+            B[ni] = B[ni] + (ni & 1) + A[ni] + ni + B[ni+N];
+            sum += ((B[i] + B[ni]) >> 1) << 1;
         }
     }
-    
-
-    
 
     double end_time = omp_get_wtime();
     double elapsed = end_time - start_time;
