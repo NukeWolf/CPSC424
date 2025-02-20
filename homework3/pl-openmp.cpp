@@ -40,24 +40,30 @@ int main() {
     // TODO: your code here. Return the sum in the sum double.
     // Initial sum of 0
     double sum = (2 * B[0] + 3 * B[N] + 4 * A[0]) >> 1;
+    int max = (N+1)/2;
 
+    // Handle case in the middle to not double middle value
     if (!(N & 1)){
         int i = N / 2;
         B[i] = B[i] + (i & 1) + A[i] + i + B[i+N];
         sum += B[i];
+        // Exception to (n mod 2) and (ni mod 2) for even cases of N. Otherwise, for odd cases, this is always 1.
+        sum += (max / 2) * 2;
     }
     
-
+    // Handle the constant value
     
     //Initial
     #pragma omp parallel
     {
-        int max = (N+1)/2;
-        // int n_magic = N & 1;
+        
+        int n_magic = N & 1;
+        int constant = N + n_magic;
+        
         #pragma omp for reduction(+:sum) schedule(static)
         for(int i = 1; i < max; i++){
             int ni = N - i;
-            sum += (((i & 1) + (ni & 1) + A[i] + B[i] + B[ni] + A[ni] + B[i+N] + N + B[ni+N]) >> 1) << 1;
+            sum += ((A[i] + B[i] + B[ni] + A[ni] + B[i+N] + constant + B[ni+N]) >> 1) << 1;
         }
     }
 
