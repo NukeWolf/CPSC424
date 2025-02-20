@@ -40,6 +40,42 @@ int main() {
     // TODO: your code here. Return the sum in the sum double.
     double sum = 0;
 
+    //Initial
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for(int i = 0; i < N; i++){
+            A[i] = A[i] + i;
+        }
+
+        #pragma omp for
+        for(int i = 0; i < N; i++){
+            B[i] = B[i] + (i%2);
+        }
+
+        #pragma omp for
+        for(int i = 0; i < N; i++){
+            B[i] = B[i] + A[i] + B[i+N];
+        }
+        #pragma omp for
+        for(int i = N; i < 2*N; i++){
+            B[i] = B[i] + 2 * A[i-N] + B[i-N];
+        }
+
+        #pragma omp for
+        for(int i = 0; i < N; i++){
+            A[i] =(B[i] + B[N-i]) / 2.0;
+        }
+
+        #pragma omp for reduction(+:sum)
+        for(int i = 0; i < N; i++){
+            sum += A[i];
+        }
+    }
+    
+
+    
+
     double end_time = omp_get_wtime();
     double elapsed = end_time - start_time;
 
